@@ -8,10 +8,5 @@
         android:onClick="openLogin"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/user"
-        android:title="@string/user"
-        android:visible="false"
-        app:showAsAction="always"/>
 
 </menu>

@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">TFG</string>
-    <string name="login">iniciarsesion</string>
-    <string name="more">mas</string>
+    <string name="login">Iniciar Sesion</string>
+    <string name="user">Usuario</string>
 </resources>
