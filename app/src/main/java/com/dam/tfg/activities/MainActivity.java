@@ -44,16 +44,11 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
-    public void sendData(View view) {
-        SensorManager sensorManager;
-        Sensor accelerometer;
-        Sensor gyroscope;
-
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    public void openSensor(View view) {
+        Intent intent = new Intent(this, SensorActivity.class);
+        startActivity(intent);
     }
 
-    //postData
     public void sendExample(View view){
         TextInputEditText mensaje_edit = (TextInputEditText)findViewById(R.id.mensaje_input);
         TextView textView = (TextView)findViewById(R.id.respuesta);
