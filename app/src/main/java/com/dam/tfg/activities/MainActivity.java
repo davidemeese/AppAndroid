@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.views.MapController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +47,11 @@ public class MainActivity extends AppCompatActivity{
 
     public void openSensor(View view) {
         Intent intent = new Intent(this, SensorActivity.class);
+        startActivity(intent);
+    }
+
+    public void openMap(View view){
+        Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
 

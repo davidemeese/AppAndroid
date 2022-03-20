@@ -3,6 +3,10 @@
     package="com.dam.tfg">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +28,9 @@
             android:theme="@style/Theme.TFG.NoActionBar"/>
         <activity
             android:name=".activities.SensorActivity"
+            android:theme="@style/Theme.TFG.NoActionBar"/>
+        <activity
+            android:name=".activities.MapActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
     </application>
 
