@@ -54,6 +54,10 @@ public class MainActivity extends AppCompatActivity{
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
+    public void openCoordenadas(View view){
+        Intent intent = new Intent(this, CoordenadasActivity.class);
+        startActivity(intent);
+    }
 
     public void sendExample(View view){
         TextInputEditText mensaje_edit = (TextInputEditText)findViewById(R.id.mensaje_input);

@@ -6,44 +6,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/tvLatitud"
+        android:id="@+id/tv_Latitud"
         android:text="Latitud: "
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         tools:ignore="MissingConstraints" />
     <TextView
-        android:id="@+id/tvLongitud"
+        android:id="@+id/tv_Longitud"
         android:text="Longitud: "
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvLatitud"/>
-    <TextView
-        android:id="@+id/tvAltura"
-        android:text="Altura: "
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvLongitud"/>
-    <TextView
-        android:id="@+id/tvPrecision"
-        android:text="Precision: "
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvAltura"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_Latitud"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/Mostrar"
+        android:id="@+id/mostrarCoordenadas"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:onClick="show"
-        android:text="Mostrar coordenadas"
+        android:onClick="mostrarCoordenadas"
+        android:text="Empezar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPrecision"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_Longitud"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
