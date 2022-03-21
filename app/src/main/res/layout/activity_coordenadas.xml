@@ -6,12 +6,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:id="@+id/titleTextGPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="GPS LOCATION"
+        android:textSize="20sp"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
         android:id="@+id/tv_Latitud"
         android:text="Latitud: "
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/titleTextGPS" />
     <TextView
         android:id="@+id/tv_Longitud"
         android:text="Longitud: "
@@ -31,5 +40,80 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Longitud"/>
+
+    <TextView
+        android:id="@+id/titleTextB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="BEST LOCATION"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/mostrarCoordenadas"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/b_Latitud"
+        android:text="Latitud: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/titleTextB" />
+    <TextView
+        android:id="@+id/b_Longitud"
+        android:text="Longitud: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/b_Latitud"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/BCoordenadas"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:onClick="BCoordenadas"
+        android:text="Empezar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/b_Longitud"/>
+
+    <TextView
+        android:id="@+id/titleTextNET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="NET LOCATION"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/BCoordenadas"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/n_Latitud"
+        android:text="Latitud: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/titleTextNET" />
+    <TextView
+        android:id="@+id/n_Longitud"
+        android:text="Longitud: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/n_Latitud"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/NCoordenadas"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:onClick="NCoordenadas"
+        android:text="Empezar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/n_Longitud"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

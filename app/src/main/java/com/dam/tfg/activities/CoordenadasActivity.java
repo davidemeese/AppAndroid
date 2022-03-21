@@ -30,8 +30,12 @@ import com.dam.tfg.R;
 public class CoordenadasActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
     LocationManager locationManager;
     double longitudeGPS, latitudeGPS;
+    double longitudeB, latitudeB;
+    double longitudeN, latitudeN;
 
     TextView tv_Latitud, tv_Longitud;
+    TextView b_Latitud, b_Longitud;
+    TextView n_Latitud, n_Longitud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,10 @@ public class CoordenadasActivity extends AppCompatActivity implements ActivityCo
 
         tv_Longitud = (TextView) findViewById(R.id.tv_Longitud);
         tv_Latitud = (TextView) findViewById(R.id.tv_Latitud);
+        b_Longitud = (TextView) findViewById(R.id.b_Longitud);
+        b_Latitud = (TextView) findViewById(R.id.b_Latitud);
+        n_Longitud = (TextView) findViewById(R.id.n_Longitud);
+        n_Latitud = (TextView) findViewById(R.id.n_Latitud);
     }
 
     private boolean checkLocation() {
@@ -110,8 +118,8 @@ public class CoordenadasActivity extends AppCompatActivity implements ActivityCo
         }
     };
 
-/*
-    public void mostrarCoordenadas(View view) {
+
+    public void BCoordenadas(View view) {
         if (!checkLocation())
             return;
         Button button = (Button) view;
@@ -138,14 +146,14 @@ public class CoordenadasActivity extends AppCompatActivity implements ActivityCo
 
     private final LocationListener locationListenerBest = new LocationListener() {
         public void onLocationChanged(Location location) {
-            longitudeGPS = location.getLongitude();
-            latitudeGPS = location.getLatitude();
+            longitudeB = location.getLongitude();
+            latitudeB = location.getLatitude();
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tv_Longitud.setText("Longitud: "+longitudeGPS);
-                    tv_Latitud.setText("Latitud: "+latitudeGPS);
+                    b_Longitud.setText("Longitud: "+longitudeB);
+                    b_Latitud.setText("Latitud: "+latitudeB);
                     Toast.makeText(CoordenadasActivity.this, "Best Provider update", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -165,7 +173,7 @@ public class CoordenadasActivity extends AppCompatActivity implements ActivityCo
     };
 
 
-    public void mostrarCoordenadas(View view) {
+    public void NCoordenadas(View view) {
         if (!checkLocation())
             return;
         Button button = (Button) view;
@@ -185,14 +193,14 @@ public class CoordenadasActivity extends AppCompatActivity implements ActivityCo
 
     private final LocationListener locationListenerNetwork = new LocationListener() {
         public void onLocationChanged(Location location) {
-            longitudeGPS = location.getLongitude();
-            latitudeGPS = location.getLatitude();
+            longitudeN = location.getLongitude();
+            latitudeN = location.getLatitude();
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tv_Longitud.setText("Longitud: "+longitudeGPS);
-                    tv_Latitud.setText("Latitud: "+latitudeGPS);
+                    n_Longitud.setText("Longitud: "+longitudeN);
+                    n_Latitud.setText("Latitud: "+latitudeN);
                     Toast.makeText(CoordenadasActivity.this, "Network Provider update", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -211,7 +219,5 @@ public class CoordenadasActivity extends AppCompatActivity implements ActivityCo
 
         }
     };
-
-     */
 
 }
