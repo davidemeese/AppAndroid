@@ -2,31 +2,19 @@ package com.dam.tfg.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
+
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.osmdroid.views.MapController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import com.dam.tfg.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -56,6 +44,11 @@ public class MainActivity extends AppCompatActivity{
     }
     public void openCoordenadas(View view){
         Intent intent = new Intent(this, CoordenadasActivity.class);
+        startActivity(intent);
+    }
+
+    public void openCoordenadasGP(View view){
+        Intent intent = new Intent(this, CoorGPActivity.class);
         startActivity(intent);
     }
 
