@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.dam.tfg">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -16,9 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TFG"
         android:usesCleartextTraffic="true">
-        <service
-            android:name=".activities.CoorGPActivity"
-            android:foregroundServiceType="location"/>
         <activity android:name=".activities.MainActivity"
             android:theme="@style/Theme.TFG.NoActionBar">
             <intent-filter>
@@ -31,12 +29,6 @@
             android:theme="@style/Theme.TFG.NoActionBar"/>
         <activity
             android:name=".activities.SensorActivity"
-            android:theme="@style/Theme.TFG.NoActionBar"/>
-        <activity
-            android:name=".activities.MapActivity"
-            android:theme="@style/Theme.TFG.NoActionBar"/>
-        <activity
-            android:name=".activities.CoordenadasActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
         <activity
             android:name=".activities.CoorGPActivity"
