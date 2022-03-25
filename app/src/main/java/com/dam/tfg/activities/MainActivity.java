@@ -38,15 +38,6 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
-    public void openMap(View view){
-        Intent intent = new Intent(this, MapActivity.class);
-        startActivity(intent);
-    }
-    public void openCoordenadas(View view){
-        Intent intent = new Intent(this, CoordenadasActivity.class);
-        startActivity(intent);
-    }
-
     public void openCoordenadasGP(View view){
         Intent intent = new Intent(this, CoorGPActivity.class);
         startActivity(intent);

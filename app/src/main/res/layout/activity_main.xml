@@ -78,30 +78,6 @@
         app:layout_constraintTop_toBottomOf="@+id/respuesta"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/Map"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:onClick="openMap"
-        android:text="Ir a Mapa"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SensorButton"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/Coor"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:onClick="openCoordenadas"
-        android:text="Ir a Coordenadas"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Map"/>
-
-    <com.google.android.material.button.MaterialButton
         android:id="@+id/CoorGP"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="wrap_content"
@@ -111,6 +87,6 @@
         android:text="Ir a CoordenadasGP"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Coor"/>
+        app:layout_constraintTop_toBottomOf="@+id/SensorButton"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
