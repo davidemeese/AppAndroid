@@ -11,12 +11,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dam.tfg.R;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class OSMActivity extends AppCompatActivity {
@@ -30,23 +33,41 @@ public class OSMActivity extends AppCompatActivity {
     }
 
     public void sendVel( View view) {
-        String URL = "https://z.overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3B%28way%5B%22maxspeed%22%5D%28around%3A10%2C37%2E3255756%2C%2D5%2E7838223%29%3B%29%3Bout%3B%3E%3B%0A";
+        String URL = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];way[\"maxspeed\"](around:20,37.36839748416125, -5.764459069095468);out;";
+        final Integer[] vel = new Integer[1];
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null,
-                response -> {
-                    Log.d("Volley", response.toString());
-                    try {
-                        info.setText("Velocidad maxima: "+response.getJSONArray("elements").getJSONObject(0).getJSONObject("tags").getString("maxspeed")+" km/h");
-                    } catch (JSONException e) {
-                        info.setText(e.toString());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                URL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            for(int i = 0; i < response.getJSONArray("elements").length(); i++) {
+                                if (i == 0){
+                                    info.setText("Velocidad maxima: " + response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed") + " km/h");
+                                    vel[0] = Integer.parseInt(response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed"));
+                                }
+                                else {
+                                    if (vel[0] > Integer.parseInt(response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed")))
+                                    {
+                                        info.setText("Velocidad maxima: " + response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed") + " km/h");
+                                    }
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            info.setText(e.toString());
+                        }
                     }
                 },
-                error -> {
-                    info.setText(error.toString());
-                }
-        );
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        info.setText(error.toString());
+                    }
+                });
 
         requestQueue.add(jsonObjectRequest);
     }

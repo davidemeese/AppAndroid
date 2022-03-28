@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:onClick="sendVel"
-        android:text="Mostrar coordenadas"
+        android:text="Mostrar velocidad maxima"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/maxvel"/>
