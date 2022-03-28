@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    public void openOSM(View view){
+        Intent intent = new Intent(this, OSMActivity.class);
+        startActivity(intent);
+    }
+
     public void sendExample(View view){
         TextInputEditText mensaje_edit = (TextInputEditText)findViewById(R.id.mensaje_input);
         TextView textView = (TextView)findViewById(R.id.respuesta);

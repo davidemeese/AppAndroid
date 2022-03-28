@@ -89,4 +89,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/SensorButton"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/OSM"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:onClick="openOSM"
+        android:text="Ir a OSM velocidad"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CoorGP"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
