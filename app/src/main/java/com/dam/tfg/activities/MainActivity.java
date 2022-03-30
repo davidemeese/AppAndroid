@@ -33,11 +33,6 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
-    public void openSensor(View view) {
-        Intent intent = new Intent(this, SensorActivity.class);
-        startActivity(intent);
-    }
-
     public void openCoordenadasGP(View view){
         Intent intent = new Intent(this, CoorGPActivity.class);
         startActivity(intent);
@@ -45,6 +40,11 @@ public class MainActivity extends AppCompatActivity{
 
     public void openOSM(View view){
         Intent intent = new Intent(this, OSMActivity.class);
+        startActivity(intent);
+    }
+
+    public void irAEnvio(View view){
+        Intent intent = new Intent(this, GPSyVelActivity.class);
         startActivity(intent);
     }
 

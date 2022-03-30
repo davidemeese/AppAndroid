@@ -28,13 +28,13 @@
             android:name=".activities.LoginActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
         <activity
-            android:name=".activities.SensorActivity"
-            android:theme="@style/Theme.TFG.NoActionBar"/>
-        <activity
             android:name=".activities.CoorGPActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
         <activity
             android:name=".activities.OSMActivity"
+            android:theme="@style/Theme.TFG.NoActionBar"/>
+        <activity
+            android:name=".activities.GPSyVelActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
     </application>
 

@@ -38,7 +38,6 @@ public class CoorGPActivity extends AppCompatActivity {
 
     LocationManager locationManager;
     double longitudeB, latitudeB;
-    float kmh;
     TextView b_Latitud, b_Longitud, b_calle, b_velocidad;
 
     @Override
@@ -138,15 +137,12 @@ public class CoorGPActivity extends AppCompatActivity {
                 }
             });
         }
-
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
         }
-
         @Override
         public void onProviderEnabled(String s) {
         }
-
         @Override
         public void onProviderDisabled(String s) {
         }
