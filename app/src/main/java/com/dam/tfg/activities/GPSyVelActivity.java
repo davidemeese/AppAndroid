@@ -33,6 +33,7 @@ import com.dam.tfg.R;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +44,8 @@ public class GPSyVelActivity extends AppCompatActivity {
     double latitude, longitude;
     float velocidadActual, velocidadMaxima;
     TextView lat, lon, vel, calle, vel_max, infra, num;
+    DecimalFormat dosdeci = new DecimalFormat("#.00");
+    String s_velocidadActual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,13 +134,15 @@ public class GPSyVelActivity extends AppCompatActivity {
                 //setLocation(location);
                 if(location.hasSpeed()){
                     velocidadActual = (float) (location.getSpeed()*3.6);
-                    vel.setText("Velocidad: "+velocidadActual+"km/h");
+                    s_velocidadActual = dosdeci.format(velocidadActual);
+                    vel.setText("Velocidad: "+s_velocidadActual+"km/h");
                     if(Float.compare(velocidadActual,(velocidadMaxima*2)) > 0){
-                        infra.setText("Infraccion: Si " + velocidadMaxima*2 +" "+ velocidadActual);
-                        sendKafka(Double.toString(latitude), Double.toString(longitude), Float.toString(velocidadActual));
+                        infra.setText("Infraccion: Si " + velocidadMaxima*2 +" "+ s_velocidadActual);
+                        sendKafka(Double.toString(latitude), Double.toString(longitude), s_velocidadActual);
                     }
                     else{
-                        infra.setText("Infraccion: No " + velocidadMaxima*2 +" "+ velocidadActual);
+                        infra.setText("Infraccion: No " + velocidadMaxima*2 +" "+ s_velocidadActual);
+                        num.setText("No enviado a Kafka");
                     }
                 }
             });
@@ -178,21 +183,22 @@ public class GPSyVelActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
                 URL, null,
                 response -> {
                     try {
                         for(int i = 0; i < response.getJSONArray("elements").length(); i++) {
-
+                            String maxspeed = response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed");
                             if (i == 0){
-                                vel_max.setText("Velocidad maxima: " + response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed") + " km/h");
-                                velocidadMaxima = Float.parseFloat(response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed"));
+                                vel_max.setText("Velocidad maxima: " + maxspeed + " km/h");
+                                velocidadMaxima = Float.parseFloat(maxspeed);
                             }
                             else {
-                                if (velocidadMaxima > Float.parseFloat(response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed")))
+                                if (velocidadMaxima > Float.parseFloat(maxspeed))
                                 {
-                                    vel_max.setText("Velocidad maxima: " + response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed") + " km/h");
-                                    velocidadMaxima = Float.parseFloat(response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed"));
+                                    vel_max.setText("Velocidad maxima: " + maxspeed + " km/h");
+                                    velocidadMaxima = Float.parseFloat(maxspeed);
                                 }
                             }
                         }

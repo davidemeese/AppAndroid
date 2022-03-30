@@ -3,5 +3,5 @@
     <string name="login">Iniciar Sesion</string>
     <string name="user">Usuario</string>
     <string name="URL_VelMax">http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];way[\"maxspeed\"](around:20,%1$s,%2$s);out;</string>
-    <string name="URL_APIKafka">http://192.168.206.130:8080/api/coordenadas</string>
+    <string name="URL_APIKafka">http://192.168.206.130:8080/kafkaproducer/coordenadas</string>
 </resources>

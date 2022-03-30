@@ -33,13 +33,8 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
-    public void openCoordenadasGP(View view){
-        Intent intent = new Intent(this, CoorGPActivity.class);
-        startActivity(intent);
-    }
-
-    public void openOSM(View view){
-        Intent intent = new Intent(this, OSMActivity.class);
+    public void openMovil(View view){
+        Intent intent = new Intent(this, GPSyVelMovilActivity.class);
         startActivity(intent);
     }
 
