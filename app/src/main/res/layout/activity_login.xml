@@ -35,11 +35,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:textColorHint="@color/white"
         app:startIconDrawable="@drawable/ic_baseline_person_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_input"
+            android:background="@color/grey"
             android:layout_width="match_parent"
+            android:textColorHint="@color/white"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -50,6 +53,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Contraseña"
+        android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="@id/user_input_layout"
         app:layout_constraintStart_toStartOf="@id/user_input_layout"
         app:layout_constraintTop_toBottomOf="@id/user_input_layout"
@@ -58,7 +62,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/pass_input"
             android:layout_width="match_parent"
+            android:background="@color/grey"
             android:layout_height="wrap_content"
+            android:textColorHint="@color/white"
             android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>

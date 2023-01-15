@@ -28,45 +28,18 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
     }
 
-    public void openLogin(MenuItem item) {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-    }
-
-    public void openMovil(View view){
-        Intent intent = new Intent(this, GPSyVelMovilActivity.class);
-        startActivity(intent);
-    }
-
     public void irAEnvio(View view){
         Intent intent = new Intent(this, GPSyVelActivity.class);
         startActivity(intent);
     }
 
-    public void sendExample(View view){
-        TextInputEditText mensaje_edit = (TextInputEditText)findViewById(R.id.mensaje_input);
-        TextView textView = (TextView)findViewById(R.id.respuesta);
-        String mensaje = mensaje_edit.getText().toString();
+    public void openLogin(View view) {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
 
-        String url = "http://192.168.206.130:8080/api/"+mensaje;
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        textView.setText("Data: "+response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        textView.setText("Data: " + error.toString());
-                    }
-                });
-        requestQueue.add(request);
+    public void openRegister(View view) {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
     }
 }
