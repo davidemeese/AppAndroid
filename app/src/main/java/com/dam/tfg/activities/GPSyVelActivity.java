@@ -33,6 +33,7 @@ import com.android.volley.toolbox.Volley;
 import com.dam.tfg.R;
 import com.ekn.gruzer.gaugelibrary.ArcGauge;
 import com.ekn.gruzer.gaugelibrary.Range;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONException;
 
@@ -58,6 +59,13 @@ public class GPSyVelActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gpsyvel);
+
+        findViewById(R.id.singOut).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goBack();
+            }
+        });
 
         lat = findViewById(R.id.Lat);
         lon = findViewById(R.id.Lon);
@@ -89,6 +97,12 @@ public class GPSyVelActivity extends AppCompatActivity {
             }
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    private void goBack(){
+        Intent intent = new Intent(GPSyVelActivity.this, LoggedActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private boolean checkLocation() {

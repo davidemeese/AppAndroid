@@ -17,7 +17,7 @@
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar_with_login"
+            app:menu="@menu/top_app_bar_login"
             app:navigationIcon="@drawable/ic_baseline_directions_car_24"
             app:title="TFG" />
 
@@ -46,5 +46,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/matricula_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="30dp"
+        android:hint="Matricula"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iraEnvio"
+        android:textColorHint="@color/white"
+        android:background="@color/grey"
+        app:startIconDrawable="@drawable/ic_baseline_video_label_24">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/matricula_input"
+        android:background="@color/grey"
+        android:layout_width="match_parent"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/enviarMatricula"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:icon="@drawable/ic_baseline_send_24"
+        android:text="Guardar matricula"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/matricula_input_layout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

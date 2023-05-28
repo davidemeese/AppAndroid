@@ -2,10 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/login"
+        android:id="@+id/singOut"
         android:icon="@drawable/ic_baseline_arrow_back_24"
         android:title="Volver Atras"
-        android:onClick="returnMain"
         app:showAsAction="always" />
 
 

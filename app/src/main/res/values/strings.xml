@@ -4,4 +4,5 @@
     <string name="user">Usuario</string>
     <string name="URL_VelMax">http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];way[\"maxspeed\"](around:20,%1$s,%2$s);out;</string>
     <string name="URL_APIKafka">http://192.168.206.130:8080/kafkaproducer/coordenadas</string>
+    <string name="URL_DATABASE">https://tfg-login-8ea38-default-rtdb.europe-west1.firebasedatabase.app</string>
 </resources>
