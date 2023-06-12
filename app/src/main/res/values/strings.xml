@@ -3,6 +3,12 @@
     <string name="login">Iniciar Sesion</string>
     <string name="user">Usuario</string>
     <string name="URL_VelMax">http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];way[\"maxspeed\"](around:20,%1$s,%2$s);out;</string>
-    <string name="URL_APIKafka">http://192.168.206.130:8080/kafkaproducer/coordenadas</string>
+    <string name="baseURLVel">http://overpass-api.de/api/</string>
+    <string name="baseURLVel_extend">http://overpass-api.de/api/interpreter?data=</string>
+    <string name="dataUrlVel">[out:json][timeout:25];way[\"maxspeed\"](around:20,%1$s,%2$s);out;</string>
+    <string name="baseUrlKafka">http://192.168.206.130:8080/</string>
+    <string name="POSTKAFKA">kafkaproducer/coordenadas</string>
     <string name="URL_DATABASE">https://tfg-login-8ea38-default-rtdb.europe-west1.firebasedatabase.app</string>
+    <string name="baseUrlApiFirebase">http://192.168.206.130:8081/</string>
+    <string name="POSTFIREBASE">kafkaproducer/coordenadas</string>
 </resources>

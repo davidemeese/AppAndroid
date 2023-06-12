@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dam.tfg.R;
+import com.dam.tfg.interfaces.ApiService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,6 +24,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class LoggedActivity extends AppCompatActivity {
 
@@ -47,23 +54,20 @@ public class LoggedActivity extends AppCompatActivity {
         usersRef = firebaseDatabase.getReference("usuarios");
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
         currentUser.getIdToken(true)
-                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                    @Override
-                    public void onComplete(Task<GetTokenResult> task) {
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
                         token = task.getResult().getToken();
-                        Log.i("token", token);
+                        getMatricula(token);
+                        setToken(token);
+                        Log.d("Token", token);
                     }
                 });
 
         userId = currentUser.getUid();
 
         matriculaTextInput = findViewById(R.id.matricula_input);
-        if (matriculaTextInput.getText() == null) {
-            getMatricula();
-        } else if (matriculaTextInput.getText().toString().equals("")) {
-            getMatricula();
-        }
 
         findViewById(R.id.singOut).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,38 +84,62 @@ public class LoggedActivity extends AppCompatActivity {
         });
     }
 
-    private void getMatricula() {
-        usersRef.child(userId).child("matricula").addValueEventListener(new ValueEventListener() {
+    private void getMatricula(String token) {
+        String baseUrl = getString(R.string.baseUrlApiFirebase);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        Call<String> call = apiService.getMatriculaByUserId("Bearer "+token,userId);
+        call.enqueue(new Callback<String>() {
             @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                matriculaTextInput.setText(value);
-                Log.d(TAG, "Value is: " + value);
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    matriculaTextInput.setText(response.body());
+                } else {
+                    matriculaTextInput.setText("Introduce matricula");
+                }
             }
 
             @Override
-            public void onCancelled(@NotNull DatabaseError error) {
-                Log.w(TAG, "Failed to read value.", error.toException());
+            public void onFailure(Call<String> call, Throwable t) {
+                matriculaTextInput.setText("Fallo");
             }
         });
     }
 
     private void saveMatricula() {
         if (matriculaTextInput.getText() != null) {
-            String matricula = matriculaTextInput.getText().toString();
-            usersRef.child(userId).child("matricula").setValue(matricula)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NotNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "Matrícula guardada correctamente");
-                            } else {
-                                Log.e(TAG, "Error al guardar la matrícula: " + task.getException().getMessage());
-                            }
-                        }
-                    });
+            String baseUrl = getString(R.string.baseUrlApiFirebase);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(baseUrl)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .build();
+
+            ApiService apiService = retrofit.create(ApiService.class);
+
+            Call<Void> call = apiService.setMatriculaByUserId("Bearer "+token, userId, matriculaTextInput.getText().toString());
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "Matrícula guardada correctamente");
+                    } else {
+                        Log.e(TAG, "Error al guardar la matrícula");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Log.e(TAG, "Error al solicitar guardar la matrícula");
+                }
+            });
         }
-        Log.d(TAG, "usersRef:"+usersRef);
     }
 
     private void signOut() {
@@ -123,6 +151,11 @@ public class LoggedActivity extends AppCompatActivity {
 
     public void irAEnvio(View view){
         Intent intent = new Intent(this, GPSyVelActivity.class);
+        intent.putExtra("matricula", this.matriculaTextInput.getText().toString());
         startActivity(intent);
+    }
+
+    private void setToken(String token) {
+        this.token = token;
     }
 }

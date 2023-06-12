@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
 import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,25 +22,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.dam.tfg.R;
+import com.dam.tfg.interfaces.ApiService;
 import com.ekn.gruzer.gaugelibrary.ArcGauge;
 import com.ekn.gruzer.gaugelibrary.Range;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class GPSyVelActivity extends AppCompatActivity {
     LocationManager locationManager;
@@ -52,7 +48,7 @@ public class GPSyVelActivity extends AppCompatActivity {
     ArcGauge speedometer;
     DecimalFormat dosdeci = new DecimalFormat("#.00");
     DecimalFormat seisdeci = new DecimalFormat("#.000000");
-    String s_velocidadActual;
+    String s_velocidadActual, matricula;
 
 
     @Override
@@ -66,6 +62,8 @@ public class GPSyVelActivity extends AppCompatActivity {
                 goBack();
             }
         });
+
+        matricula = getIntent().getStringExtra("matricula");
 
         lat = findViewById(R.id.Lat);
         lon = findViewById(R.id.Lon);
@@ -163,7 +161,11 @@ public class GPSyVelActivity extends AppCompatActivity {
             latitude = location.getLatitude();
 
             runOnUiThread(() -> {
-                getVelMax(latitude, longitude);
+                try {
+                    getVelMax(latitude, longitude);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 lon.setText(seisdeci.format(longitude) + "°");
                 lat.setText(seisdeci.format(latitude)+ "°");
                 Toast.makeText(GPSyVelActivity.this, "Best Provider update", Toast.LENGTH_SHORT).show();
@@ -176,7 +178,7 @@ public class GPSyVelActivity extends AppCompatActivity {
 
                     if(Float.compare(velocidadActual,(velocidadMaxima*2)) > 0){
                         infra.setText("Infraccion: Si " + velocidadMaxima*2 +" "+ s_velocidadActual);
-                        sendKafka(Double.toString(latitude), Double.toString(longitude), s_velocidadActual, "2222BBB");
+                        sendKafka(Double.toString(latitude), Double.toString(longitude), s_velocidadActual);
 
                     } else{
                         infra.setText("Infraccion: No " + velocidadMaxima*2 +" "+ s_velocidadActual);
@@ -217,43 +219,58 @@ public class GPSyVelActivity extends AppCompatActivity {
         }
     }*/
 
-    public void getVelMax(double lat, double lon) {
-        String URL = getString(R.string.URL_VelMax,String.valueOf(lat),String.valueOf(lon));
+    public void getVelMax(double lat, double lon) throws UnsupportedEncodingException {
+        String baseURL = getString(R.string.baseURLVel_extend);
+        String data = getString(R.string.dataUrlVel, String.valueOf(lat), String.valueOf(lon));
+        String URL = baseURL + URLEncoder.encode(data, "UTF-8");
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.baseURLVel))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
-                URL, null,
-                response -> {
-                    try {
-                        for(int i = 0; i < response.getJSONArray("elements").length(); i++) {
-                            String maxspeed = response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("maxspeed");
-                            String street = response.getJSONArray("elements").getJSONObject(i).getJSONObject("tags").getString("name");
+        ApiService apiService = retrofit.create(ApiService.class);
 
-                            if (i == 0){
+        Call<JsonObject> call = apiService.getVelMax(URL);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    JsonArray elementsArray = response.body().getAsJsonArray("elements");
+                    for (int i = 0; i < elementsArray.size(); i++) {
+                        JsonObject elementObject = elementsArray.get(i).getAsJsonObject();
+                        String maxspeed = elementObject.getAsJsonObject("tags").get("maxspeed").getAsString();
+                        String street = "";
+                        if (elementObject.getAsJsonObject("tags").get("name") != null) {
+                            street = elementObject.getAsJsonObject("tags").get("name").getAsString();
+                        }
+
+                        if (i == 0) {
+                            vel_max.setText(maxspeed + " km/h");
+                            streetId.setText("Direccion:" + street);
+                            velocidadMaxima = Float.parseFloat(maxspeed);
+                        } else {
+                            if (velocidadMaxima > Float.parseFloat(maxspeed)) {
                                 vel_max.setText(maxspeed + " km/h");
-                                streetId.setText("Direccion:" +street);
+                                streetId.setText("Direccion:" + street);
                                 velocidadMaxima = Float.parseFloat(maxspeed);
                             }
-                            else {
-                                if (velocidadMaxima > Float.parseFloat(maxspeed))
-                                {
-                                    vel_max.setText(maxspeed + " km/h");
-                                    streetId.setText("Direccion:" +street);
-                                    velocidadMaxima = Float.parseFloat(maxspeed);
-                                }
-                            }
                         }
-                    } catch (JSONException e) {
-                        System.out.println(e);
                     }
-                },
-                error -> vel_max.setText(error.toString()));
+                } else {
+                    vel_max.setText("Error en la respuesta");
+                }
+            }
 
-        requestQueue.add(jsonObjectRequest);
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                vel_max.setText(t.toString());
+            }
+        });
     }
 
-    public void sendKafka(String latv, String lonv, String velv, String matricula){
+
+/*    public void sendKafka(String latv, String lonv, String velv, String matricula){
 
         String url = getString(R.string.URL_APIKafka);
 
@@ -275,5 +292,34 @@ public class GPSyVelActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(request);
+    }*/
+
+    public void sendKafka(String latv, String lonv, String velv) {
+        String baseUrl = getString(R.string.baseUrlKafka);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        Call<String> call = apiService.sendKafka(latv, lonv, this.matricula, velv);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    num.setText("Enviado a kafka");
+                } else {
+                    num.setText("Error en la respuesta");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                num.setText(t.toString());
+            }
+        });
     }
+
 }
