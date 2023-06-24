@@ -27,13 +27,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
-            android:theme="@style/Theme.TFG.NoActionBar"/>
-        <activity
             android:name=".activities.LoggedActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
         <activity
             android:name=".activities.GPSyVelActivity"
+            android:theme="@style/Theme.TFG.NoActionBar"/>
+        <activity
+            android:name=".activities.InfraccionesActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
     </application>
 

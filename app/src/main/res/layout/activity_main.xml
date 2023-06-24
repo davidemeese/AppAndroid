@@ -19,7 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/top_app_bar_with_login"
             app:navigationIcon="@drawable/ic_baseline_directions_car_24"
-            app:title="TFG" />
+            app:title="ELKAF VELOCITY" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -45,18 +45,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/register"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:icon="@drawable/ic_baseline_person_24"
-        android:onClick="openRegister"
-        android:text="Registrarse"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

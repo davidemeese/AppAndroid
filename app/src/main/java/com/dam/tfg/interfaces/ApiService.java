@@ -1,6 +1,11 @@
 package com.dam.tfg.interfaces;
 
+import com.dam.tfg.model.InfraccionData;
+import com.dam.tfg.model.InfraccionesResponse;
 import com.google.gson.JsonObject;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -30,4 +35,10 @@ public interface ApiService {
 
     @POST("/usuarios/{userId}/matricula")
     Call<Void> setMatriculaByUserId(@Header("Authorization") String token, @Path("userId") String userId, @Body String matricula);
+
+    @GET("/usuarios/{userId}/infracciones")
+    Call<List<InfraccionData>> getInfracciones(@Header("Authorization") String token, @Path("userId") String userId);
+
+    @POST("usuarios/{userId}/infracciones")
+    Call<Void> setInfraccion(@Header("Authorization") String token, @Path("userId") String userId, @Body InfraccionData infraccionData);
 }

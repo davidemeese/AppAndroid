@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import androidx.core.content.ContextCompat;
 
 import com.dam.tfg.R;
 import com.dam.tfg.interfaces.ApiService;
+import com.dam.tfg.model.InfraccionData;
 import com.ekn.gruzer.gaugelibrary.ArcGauge;
 import com.ekn.gruzer.gaugelibrary.Range;
 import com.google.gson.JsonArray;
@@ -32,6 +34,9 @@ import com.google.gson.JsonObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +46,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class GPSyVelActivity extends AppCompatActivity {
+    private static final String TAG = "GPSyVelActivity";
+
     LocationManager locationManager;
     double latitude, longitude;
     float velocidadActual, velocidadMaxima;
@@ -48,7 +55,7 @@ public class GPSyVelActivity extends AppCompatActivity {
     ArcGauge speedometer;
     DecimalFormat dosdeci = new DecimalFormat("#.00");
     DecimalFormat seisdeci = new DecimalFormat("#.000000");
-    String s_velocidadActual, matricula;
+    String s_velocidadActual, matricula, token, userId, fecha;
 
 
     @Override
@@ -64,11 +71,17 @@ public class GPSyVelActivity extends AppCompatActivity {
         });
 
         matricula = getIntent().getStringExtra("matricula");
+        token = getIntent().getStringExtra("token");
+        userId = getIntent().getStringExtra("userId");
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        fecha = dateFormat.format(calendar.getTime());
+
 
         lat = findViewById(R.id.Lat);
         lon = findViewById(R.id.Lon);
         vel = findViewById(R.id.Vel);
-        //calle = findViewById(R.id.Calle);
         vel_max = findViewById(R.id.Vel_max);
         infra = findViewById(R.id.Infra);
         num = findViewById(R.id.Num);
@@ -169,16 +182,16 @@ public class GPSyVelActivity extends AppCompatActivity {
                 lon.setText(seisdeci.format(longitude) + "°");
                 lat.setText(seisdeci.format(latitude)+ "°");
                 Toast.makeText(GPSyVelActivity.this, "Best Provider update", Toast.LENGTH_SHORT).show();
-                //setLocation(location);
                 if(location.hasSpeed()){
                     velocidadActual = (float) (location.getSpeed()*3.6);
                     s_velocidadActual = dosdeci.format(velocidadActual);
                     vel.setText(s_velocidadActual+" km/h");
                     speedometer.setValue(Math.round(velocidadActual));
 
-                    if(Float.compare(velocidadActual,(velocidadMaxima*2)) > 0){
+                    if(velocidadMaxima != 0.0f && Float.compare(velocidadActual,(velocidadMaxima*2)) > 0){
                         infra.setText("Infraccion: Si " + velocidadMaxima*2 +" "+ s_velocidadActual);
                         sendKafka(Double.toString(latitude), Double.toString(longitude), s_velocidadActual);
+                        sendFirebase(Double.toString(latitude), Double.toString(longitude), s_velocidadActual, String.valueOf(velocidadMaxima*2));
 
                     } else{
                         infra.setText("Infraccion: No " + velocidadMaxima*2 +" "+ s_velocidadActual);
@@ -201,23 +214,6 @@ public class GPSyVelActivity extends AppCompatActivity {
             //no-op
         }
     };
-
-/*    public void setLocation(Location loc) {
-        //Obtener la direccion de la calle a partir de la latitud y la longitud
-        if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
-            try {
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                List<Address> list = geocoder.getFromLocation(
-                        loc.getLatitude(), loc.getLongitude(), 1);
-                if (!list.isEmpty()) {
-                    Address DirCalle = list.get(0);
-                    calle.setText(DirCalle.getAddressLine(0));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
     public void getVelMax(double lat, double lon) throws UnsupportedEncodingException {
         String baseURL = getString(R.string.baseURLVel_extend);
@@ -258,47 +254,22 @@ public class GPSyVelActivity extends AppCompatActivity {
                         }
                     }
                 } else {
+                    Log.e("VelocidadMaxima", "error en la respuesta");
                     vel_max.setText("Error en la respuesta");
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("VelocidadMaxima", t.toString());
                 vel_max.setText(t.toString());
             }
         });
     }
 
-
-/*    public void sendKafka(String latv, String lonv, String velv, String matricula){
-
-        String url = getString(R.string.URL_APIKafka);
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        StringRequest request = new StringRequest(
-                Request.Method.POST,
-                url,
-                response -> num.setText("Enviado a kafka"),
-                error -> num.setText(error.toString())){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("lat",latv);
-                params.put("lon",lonv);
-                params.put("mat", matricula);
-                params.put("vel",velv);
-                return params;
-            }
-        };
-        requestQueue.add(request);
-    }*/
-
     public void sendKafka(String latv, String lonv, String velv) {
-        String baseUrl = getString(R.string.baseUrlKafka);
-
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(getString(R.string.baseUrlKafka))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
@@ -318,6 +289,34 @@ public class GPSyVelActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 num.setText(t.toString());
+            }
+        });
+    }
+
+    public void sendFirebase(String latv, String lonv, String velv, String velMaxv) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.baseUrlApiFirebase))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        InfraccionData infraccionData = new InfraccionData(fecha,lonv,latv,velv,velMaxv);
+
+        Call<Void> call = apiService.setInfraccion("Bearer "+token, userId,infraccionData);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "Infraccion guardada correctamente");
+                } else {
+                    Log.e(TAG, "Error al guardar la infraccion");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "Error al solicitar guardar la infraccion");
             }
         });
     }

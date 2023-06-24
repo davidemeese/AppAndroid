@@ -35,9 +35,7 @@ public class MainActivity extends AppCompatActivity{
 
     private static final String TAG = "GoogleActivity";
 
-    // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -56,7 +54,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -64,21 +61,12 @@ public class MainActivity extends AppCompatActivity{
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        // [END config_signin]
 
-        // [START initialize_auth]
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
     }
 
     public void irAEnvio(View view){
         Intent intent = new Intent(this, GPSyVelActivity.class);
-        startActivity(intent);
-    }
-
-    public void openRegister(View view) {
-        Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 

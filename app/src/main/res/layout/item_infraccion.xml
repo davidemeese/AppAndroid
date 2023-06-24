@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/celda_background"
+    android:layout_margin="2dp">
+
+    <TextView
+        android:id="@+id/textFecha"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Fecha"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/textPosicion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Posición"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/textVelocidad"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Velocidad"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/textVelocidadMaxima"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Velocidad Máxima"
+        android:textAlignment="center"/>
+
+</LinearLayout>
+

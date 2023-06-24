@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#121212" /> <!-- Color de fondo de la celda -->
+    <corners android:radius="4dp" /> <!-- Esquinas redondeadas de la celda -->
+</shape>

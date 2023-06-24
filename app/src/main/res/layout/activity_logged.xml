@@ -83,4 +83,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/matricula_input_layout"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mostrarInfracciones"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:icon="@drawable/ic_baseline_send_24"
+        android:text="Mostrar infracciones"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enviarMatricula"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

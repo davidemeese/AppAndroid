@@ -200,6 +200,15 @@
         android:text=""
         app:layout_constraintTop_toBottomOf="@+id/Infra" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/Street"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="@color/white"
+        android:text="Direccion: "
+        app:layout_constraintTop_toBottomOf="@+id/Num" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/Datos"
         style="@style/Widget.MaterialComponents.Button.Icon"
@@ -210,16 +219,6 @@
         android:text="Empezar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Num"/>
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/Street"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:textColor="@color/white"
-        android:text="Direccion: "
-        app:layout_constraintTop_toBottomOf="@+id/Datos" />
-
+        app:layout_constraintTop_toBottomOf="@+id/Street"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

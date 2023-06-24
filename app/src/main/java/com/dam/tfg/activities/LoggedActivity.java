@@ -36,10 +36,8 @@ public class LoggedActivity extends AppCompatActivity {
     private static final String TAG = "LoggedActivity";
 
     String userId, token;
-    FirebaseUser currentUser;
-    TextInputEditText matriculaTextInput;
 
-    DatabaseReference usersRef;
+    TextInputEditText matriculaTextInput;
 
 
     @Override
@@ -50,10 +48,7 @@ public class LoggedActivity extends AppCompatActivity {
 
         String url = getString(R.string.URL_DATABASE);
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(url);
-        usersRef = firebaseDatabase.getReference("usuarios");
-
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         currentUser.getIdToken(true)
                 .addOnCompleteListener(task -> {
@@ -80,6 +75,12 @@ public class LoggedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveMatricula();
+            }
+        });
+        findViewById(R.id.mostrarInfracciones).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                irAInfracciones(view);
             }
         });
     }
@@ -152,6 +153,15 @@ public class LoggedActivity extends AppCompatActivity {
     public void irAEnvio(View view){
         Intent intent = new Intent(this, GPSyVelActivity.class);
         intent.putExtra("matricula", this.matriculaTextInput.getText().toString());
+        intent.putExtra("token", token);
+        intent.putExtra("userId", userId);
+        startActivity(intent);
+    }
+
+    public void irAInfracciones(View view) {
+        Intent intent = new Intent(this, InfraccionesActivity.class);
+        intent.putExtra("token", token);
+        intent.putExtra("userId", userId);
         startActivity(intent);
     }
 
