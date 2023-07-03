@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 import com.dam.tfg.R;
 import com.dam.tfg.interfaces.ApiService;
 import com.dam.tfg.model.InfraccionData;
+import com.dam.tfg.model.UserData;
 import com.ekn.gruzer.gaugelibrary.ArcGauge;
 import com.ekn.gruzer.gaugelibrary.Range;
 import com.google.gson.JsonArray;
@@ -45,23 +46,24 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class GPSyVelActivity extends AppCompatActivity {
+public class DetectorInfraccionesActivity extends AppCompatActivity {
     private static final String TAG = "GPSyVelActivity";
 
     LocationManager locationManager;
     double latitude, longitude;
     float velocidadActual, velocidadMaxima;
-    TextView lat, lon, vel, calle, vel_max, infra, num, streetId;
+    TextView lat, lon, vel, vel_max, infra, num, streetId;
     ArcGauge speedometer;
     DecimalFormat dosdeci = new DecimalFormat("#.00");
     DecimalFormat seisdeci = new DecimalFormat("#.000000");
-    String s_velocidadActual, matricula, token, userId, fecha;
+    String s_velocidadActual, fecha;
 
+    UserData userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gpsyvel);
+        setContentView(R.layout.activity_detector_infracciones);
 
         findViewById(R.id.singOut).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,21 +72,21 @@ public class GPSyVelActivity extends AppCompatActivity {
             }
         });
 
-        matricula = getIntent().getStringExtra("matricula");
-        token = getIntent().getStringExtra("token");
-        userId = getIntent().getStringExtra("userId");
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("userData")) {
+            userData = (UserData) intent.getSerializableExtra("userData");
+        }
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         fecha = dateFormat.format(calendar.getTime());
-
 
         lat = findViewById(R.id.Lat);
         lon = findViewById(R.id.Lon);
         vel = findViewById(R.id.Vel);
         vel_max = findViewById(R.id.Vel_max);
         infra = findViewById(R.id.Infra);
-        num = findViewById(R.id.Num);
         streetId = findViewById(R.id.Street);
 
         speedometer = findViewById(R.id.arcGauge);
@@ -111,7 +113,7 @@ public class GPSyVelActivity extends AppCompatActivity {
     }
 
     private void goBack(){
-        Intent intent = new Intent(GPSyVelActivity.this, LoggedActivity.class);
+        Intent intent = new Intent(DetectorInfraccionesActivity.this, LoggedActivity.class);
         startActivity(intent);
         finish();
     }
@@ -162,7 +164,6 @@ public class GPSyVelActivity extends AppCompatActivity {
             if (provider != null) {
                 locationManager.requestLocationUpdates(provider, 5 * 1000, 50, locationListenerBest);
                 button.setText("Parar");
-                Toast.makeText(this, "Best Provider is " + provider, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -181,7 +182,6 @@ public class GPSyVelActivity extends AppCompatActivity {
                 }
                 lon.setText(seisdeci.format(longitude) + "°");
                 lat.setText(seisdeci.format(latitude)+ "°");
-                Toast.makeText(GPSyVelActivity.this, "Best Provider update", Toast.LENGTH_SHORT).show();
                 if(location.hasSpeed()){
                     velocidadActual = (float) (location.getSpeed()*3.6);
                     s_velocidadActual = dosdeci.format(velocidadActual);
@@ -189,13 +189,12 @@ public class GPSyVelActivity extends AppCompatActivity {
                     speedometer.setValue(Math.round(velocidadActual));
 
                     if(velocidadMaxima != 0.0f && Float.compare(velocidadActual,(velocidadMaxima*2)) > 0){
-                        infra.setText("Infraccion: Si " + velocidadMaxima*2 +" "+ s_velocidadActual);
+                        infra.setText("Infraccion cometida: VelocidadMaxima=" + velocidadMaxima*2 +" / Velocidad="+ s_velocidadActual);
                         sendKafka(Double.toString(latitude), Double.toString(longitude), s_velocidadActual);
                         sendFirebase(Double.toString(latitude), Double.toString(longitude), s_velocidadActual, String.valueOf(velocidadMaxima*2));
-
+                        showToast("Infraccion cometida");
                     } else{
-                        infra.setText("Infraccion: No " + velocidadMaxima*2 +" "+ s_velocidadActual);
-                        num.setText("No enviado a Kafka");
+                        infra.setText("Infraccion no cometida: VelocidadMaxima=" + velocidadMaxima*2 +" / Velocidad="+ s_velocidadActual);
                     }
                 }
             });
@@ -275,20 +274,20 @@ public class GPSyVelActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<String> call = apiService.sendKafka(latv, lonv, this.matricula, velv);
+        Call<String> call = apiService.sendKafka(latv, lonv, userData.getMatricula(), velv);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    num.setText("Enviado a kafka");
+                    Log.d(TAG, "Infraccion enviada a Kafka");
                 } else {
-                    num.setText("Error en la respuesta");
+                    Log.e(TAG, "Error al enviar la infraccion a Kafka");
                 }
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                num.setText(t.toString());
+                Log.e(TAG, "Error al enviar la infraccion a Kafka");
             }
         });
     }
@@ -303,7 +302,7 @@ public class GPSyVelActivity extends AppCompatActivity {
 
         InfraccionData infraccionData = new InfraccionData(fecha,lonv,latv,velv,velMaxv);
 
-        Call<Void> call = apiService.setInfraccion("Bearer "+token, userId,infraccionData);
+        Call<Void> call = apiService.setInfraccion("Bearer "+userData.getToken(), userData.getUserId(),infraccionData);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -319,6 +318,10 @@ public class GPSyVelActivity extends AppCompatActivity {
                 Log.e(TAG, "Error al solicitar guardar la infraccion");
             }
         });
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
 }

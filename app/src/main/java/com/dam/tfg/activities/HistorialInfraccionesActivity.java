@@ -14,10 +14,12 @@ import com.dam.tfg.adapter.InfraccionAdapter;
 import com.dam.tfg.interfaces.ApiService;
 import com.dam.tfg.interfaces.InfraccionCallback;
 import com.dam.tfg.model.InfraccionData;
+import com.dam.tfg.model.UserData;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,7 +27,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class InfraccionesActivity extends AppCompatActivity implements InfraccionCallback {
+public class HistorialInfraccionesActivity extends AppCompatActivity implements InfraccionCallback {
 
     private final String TAG = "InfraccionesActivity";
 
@@ -35,15 +37,16 @@ public class InfraccionesActivity extends AppCompatActivity implements Infraccio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_infracciones);
+        setContentView(R.layout.activity_historial_infracciones);
 
-        String token = getIntent().getStringExtra("token");
-        String userId = getIntent().getStringExtra("userId");
+        Intent intent = getIntent();
+        if (intent.hasExtra("userData")) {
+            UserData userData = (UserData) intent.getSerializableExtra("userData");
+            getInfracciones(userData.getToken(), userData.getUserId(), this);
+        }
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        getInfracciones(token, userId, this);
 
         findViewById(R.id.singOut).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +57,7 @@ public class InfraccionesActivity extends AppCompatActivity implements Infraccio
     }
 
     private void goBack(){
-        Intent intent = new Intent(InfraccionesActivity.this, LoggedActivity.class);
+        Intent intent = new Intent(HistorialInfraccionesActivity.this, LoggedActivity.class);
         startActivity(intent);
         finish();
     }
@@ -92,13 +95,23 @@ public class InfraccionesActivity extends AppCompatActivity implements Infraccio
 
     @Override
     public void onInfraccionesObtenidas(List<InfraccionData> infracciones) {
+        Collections.sort(infracciones, new Comparator<InfraccionData>() {
+            @Override
+            public int compare(InfraccionData infraccion1, InfraccionData infraccion2) {
+                return infraccion2.getFecha().compareTo(infraccion1.getFecha());
+            }
+        });
+
         infraccionAdapter = new InfraccionAdapter(infracciones);
         recyclerView.setAdapter(infraccionAdapter);
     }
 
     @Override
     public void onError(String mensajeError) {
-        // Manejar el error, por ejemplo, mostrar un mensaje de error al usuario
+        List<InfraccionData> errorList = new ArrayList<>();
+        errorList.add(new InfraccionData("Error","Error","Error","Error","Error"));
+        infraccionAdapter = new InfraccionAdapter(errorList);
+        recyclerView.setAdapter(infraccionAdapter);
         Log.d(TAG, mensajeError);;
     }
 

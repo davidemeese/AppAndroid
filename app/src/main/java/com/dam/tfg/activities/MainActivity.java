@@ -43,10 +43,12 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             FirebaseAuth.getInstance().signOut();
         }
+
         findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,22 +67,13 @@ public class MainActivity extends AppCompatActivity{
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public void irAEnvio(View view){
-        Intent intent = new Intent(this, GPSyVelActivity.class);
-        startActivity(intent);
-    }
-
-    // [START on_start_check_user]
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
-    // [END on_start_check_user]
 
-    // [START auth_with_google]
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -100,9 +93,7 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
     }
-    // [END auth_with_google]
 
-    // [START signin]
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -112,19 +103,15 @@ public class MainActivity extends AppCompatActivity{
                         Intent intent = result.getData();
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intent);
                         try {
-                            // Google Sign In was successful, authenticate with Firebase
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                             firebaseAuthWithGoogle(account.getIdToken());
                         } catch (ApiException e) {
-                            // Google Sign In failed, update UI appropriately
                             Log.w(TAG, "Google sign in failed", e);
                         }
                     }
                 }
-            }
-            );
-    // [END signin]
+            });
 
     private void updateUI(FirebaseUser user) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -134,5 +121,4 @@ public class MainActivity extends AppCompatActivity{
             finish();
         }
     }
-
 }

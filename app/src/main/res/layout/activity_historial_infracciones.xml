@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.InfraccionesActivity">
+    tools:context=".activities.HistorialInfraccionesActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -20,7 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/top_app_bar_login"
             app:navigationIcon="@drawable/ic_baseline_directions_car_24"
-            app:title="Registro infracciones" />
+            app:title="HISTORIAL INFRACCIONES" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

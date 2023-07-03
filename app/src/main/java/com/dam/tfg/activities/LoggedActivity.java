@@ -4,26 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dam.tfg.R;
 import com.dam.tfg.interfaces.ApiService;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.dam.tfg.model.UserData;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,7 +25,7 @@ public class LoggedActivity extends AppCompatActivity {
 
     private static final String TAG = "LoggedActivity";
 
-    String userId, token;
+    UserData userData;
 
     TextInputEditText matriculaTextInput;
 
@@ -46,23 +36,20 @@ public class LoggedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_logged);
         setTitle("Inicio de sesión");
 
-        String url = getString(R.string.URL_DATABASE);
-
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        String userId = currentUser.getUid();
+
+        matriculaTextInput = findViewById(R.id.matricula_input);
 
         currentUser.getIdToken(true)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        token = task.getResult().getToken();
-                        getMatricula(token);
-                        setToken(token);
-                        Log.d("Token", token);
+                        String token = task.getResult().getToken();
+                        showMatricula(token, userId);
+                        setUserData(token, userId, matriculaTextInput);
                     }
                 });
-
-        userId = currentUser.getUid();
-
-        matriculaTextInput = findViewById(R.id.matricula_input);
 
         findViewById(R.id.singOut).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,18 +61,39 @@ public class LoggedActivity extends AppCompatActivity {
         findViewById(R.id.enviarMatricula).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveMatricula();
+                if (matriculaTextInput.getText() != null && !matriculaTextInput.getText().toString().toLowerCase().contains("matricula")) {
+                    saveMatricula();
+                } else {
+                    showToast("Introduce una matrícula para guardar");
+                }
             }
         });
+
         findViewById(R.id.mostrarInfracciones).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                irAInfracciones(view);
+                if (!userData.getMatricula().toLowerCase().contains("matricula")) {
+                    irAInfracciones(view);
+                } else {
+                    showToast("Usuario sin matricula: guarda una matricula");
+                }
+
+            }
+        });
+
+        findViewById(R.id.iraDeteccion).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!userData.getMatricula().toLowerCase().contains("matricula") && !userData.getMatricula().equals("")) {
+                    irADeteccion(view);
+                } else {
+                    showToast("Usuario sin matricula: guarda una matricula");
+                }
             }
         });
     }
 
-    private void getMatricula(String token) {
+    private void showMatricula(String token, String userId) {
         String baseUrl = getString(R.string.baseUrlApiFirebase);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -95,12 +103,13 @@ public class LoggedActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<String> call = apiService.getMatriculaByUserId("Bearer "+token,userId);
+        Call<String> call = apiService.getMatriculaByUserId("Bearer "+token, userId);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
                     matriculaTextInput.setText(response.body());
+                    userData.setMatricula(response.body());
                 } else {
                     matriculaTextInput.setText("Introduce matricula");
                 }
@@ -108,39 +117,41 @@ public class LoggedActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                matriculaTextInput.setText("Fallo");
+                matriculaTextInput.setText("Introduce matricula");
             }
         });
     }
 
     private void saveMatricula() {
-        if (matriculaTextInput.getText() != null) {
-            String baseUrl = getString(R.string.baseUrlApiFirebase);
+        String baseUrl = getString(R.string.baseUrlApiFirebase);
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
 
-            ApiService apiService = retrofit.create(ApiService.class);
+        ApiService apiService = retrofit.create(ApiService.class);
 
-            Call<Void> call = apiService.setMatriculaByUserId("Bearer "+token, userId, matriculaTextInput.getText().toString());
-            call.enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        Log.d(TAG, "Matrícula guardada correctamente");
-                    } else {
-                        Log.e(TAG, "Error al guardar la matrícula");
-                    }
+        Call<Void> call = apiService.setMatriculaByUserId("Bearer " + userData.getToken(), userData.getUserId(), userData.getMatricula());
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    userData.setMatricula(matriculaTextInput.getText().toString());
+                    Log.d(TAG, "Matrícula guardada correctamente");
+                    showToast("Matrícula guardada correctamente");
+                } else {
+                    Log.e(TAG, "Error al guardar la matrícula");
+                    showToast("Error al guardar la matrícula");
                 }
+            }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    Log.e(TAG, "Error al solicitar guardar la matrícula");
-                }
-            });
-        }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "Error al guardar la matrícula");
+                showToast("Error al guardar la matrícula");
+            }
+        });
     }
 
     private void signOut() {
@@ -150,22 +161,23 @@ public class LoggedActivity extends AppCompatActivity {
         finish();
     }
 
-    public void irAEnvio(View view){
-        Intent intent = new Intent(this, GPSyVelActivity.class);
-        intent.putExtra("matricula", this.matriculaTextInput.getText().toString());
-        intent.putExtra("token", token);
-        intent.putExtra("userId", userId);
+    public void irADeteccion(View view){
+        Intent intent = new Intent(this, DetectorInfraccionesActivity.class);
+        intent.putExtra("userData", userData);
         startActivity(intent);
     }
 
     public void irAInfracciones(View view) {
-        Intent intent = new Intent(this, InfraccionesActivity.class);
-        intent.putExtra("token", token);
-        intent.putExtra("userId", userId);
+        Intent intent = new Intent(this, HistorialInfraccionesActivity.class);
+        intent.putExtra("userData", userData);
         startActivity(intent);
     }
 
-    private void setToken(String token) {
-        this.token = token;
+    private void setUserData(String token, String userId, TextInputEditText matriculaTextInput) {
+        this.userData = new UserData(userId, token, matriculaTextInput.getText().toString());
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

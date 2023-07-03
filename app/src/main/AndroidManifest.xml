@@ -30,10 +30,10 @@
             android:name=".activities.LoggedActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
         <activity
-            android:name=".activities.GPSyVelActivity"
+            android:name=".activities.DetectorInfraccionesActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
         <activity
-            android:name=".activities.InfraccionesActivity"
+            android:name=".activities.HistorialInfraccionesActivity"
             android:theme="@style/Theme.TFG.NoActionBar"/>
     </application>
 

@@ -1,11 +1,9 @@
 package com.dam.tfg.interfaces;
 
 import com.dam.tfg.model.InfraccionData;
-import com.dam.tfg.model.InfraccionesResponse;
 import com.google.gson.JsonObject;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -22,7 +20,7 @@ public interface ApiService {
     Call<JsonObject> getVelMax(@Url String url);
 
     @FormUrlEncoded
-    @POST("kafkaproducer/coordenadas")
+    @POST("kafkaproducer/infracciones")
     Call<String> sendKafka(
             @Field("lat") String lat,
             @Field("lon") String lon,

@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundScrean"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -20,7 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/top_app_bar_login"
             app:navigationIcon="@drawable/ic_baseline_directions_car_24"
-            app:title="Medidor" />
+            app:title="DETECTOR INFRACCION" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -177,7 +176,7 @@
         android:id="@+id/arcGauge"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="35dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/VelocidadLayaout"/>
@@ -185,29 +184,24 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/Infra"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_margin="20dp"
         android:textColor="@color/white"
+        android:background="@drawable/square_shape"
         android:text=""
+        android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@+id/arcGauge" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/Num"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:textColor="@color/white"
-        android:text=""
-        app:layout_constraintTop_toBottomOf="@+id/Infra" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/Street"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:layout_margin="10dp"
         android:textColor="@color/white"
         android:text="Direccion: "
-        app:layout_constraintTop_toBottomOf="@+id/Num" />
+        android:background="@drawable/square_shape"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/Infra" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/Datos"
